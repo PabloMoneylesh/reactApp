@@ -23,42 +23,51 @@ Amplify.configure({
         endpoints: [
             {
                 name: "ProfileApi",
-                endpoint: "https://0r4dohcks0.execute-api.eu-central-1.amazonaws.com/dev/getprofile"
+                endpoint: "https://0r4dohcks0.execute-api.eu-central-1.amazonaws.com/dev"
             }
         ]
     }
 });
 
-/*Auth.signIn("beaviss@ukr.net", "Password1!")
-    .then(user => console.log("user loggg in -- " + user))
-    .catch(err => console.log(err));*/
-
-
 class App extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {};
+    }
+
+    componentDidMount() {
+        this.gitProfile();
+    }
+
+    getUserId = () => {
+        if (this.props.authState === "signedIn")
+            return this.props.authData.signInUserSession.idToken.payload.sub;
+        return "";
     }
 
     gitProfile(){
-        let path = '';
-        let myInit = { // OPTIONAL
+        const self = this;
+        let path = '/getprofile?uid='+ encodeURIComponent(this.getUserId());
+        let options  = { // OPTIONAL
             headers: {}, // OPTIONAL
             response: true // OPTIONAL (return entire response object instead of response.data)
         };
-        API.get("ProfileApi", path, myInit)
+        console.log(options);
+        API.get("ProfileApi", path, options )
             .then(response => {
             console.log("response:");
             console.log(response);
+            self.setState({userProfile : response.data});
         })
             .catch(p1 => {console.log(p1);});
     }
 
+
     render() {
-        console.log(this);
-        this.gitProfile();
         return (
             <div className="App">
-                <UserProfile auth={{authState: this.props.authState, authData: this.props.authData}}/>
+                <UserProfile auth={{authState: this.props.authState, authData: this.props.authData}} userProfile={this.state.userProfile}/>
             </div>
         );
     }
