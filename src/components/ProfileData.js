@@ -1,18 +1,33 @@
 import React, {Component} from 'react';
+import ProfileObject from './ProfileObject';
 
 class ProfileData extends Component {
     constructor(props) {
         super(props);
+
+        this.state = this.parseProfile(this.props.profile);
     }
+
+    parseProfile = (profileString) =>{
+        try {
+            return {profile: JSON.parse(profileString)};
+        }
+        catch (e) {
+            console.log(e);
+        }
+
+    };
 
 
     render() {
         console.log(this);
-        if (this.props.profile) {
+        console.log(this.state.profile.objects);
+        if (this.state.profile.objects) {
             return (
-                <div>
-                    <p>{JSON.stringify(this.props.profile)}</p>
-                </div>
+                <table>
+                    <tr><td>id</td><td>startDate</td><td>endDate</td><td>object</td></tr>
+                    {this.state.profile.objects.map(object =>{return <ProfileObject profile={object} />})}
+                </table>
             )
         }
         return (
