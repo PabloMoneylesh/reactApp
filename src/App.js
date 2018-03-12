@@ -48,9 +48,10 @@ class App extends Component {
 
     gitProfile(){
         const self = this;
-        let path = '/getprofile?uid='+ encodeURIComponent(this.getUserId());
+        //let path = '/getprofile?uid='+ encodeURIComponent(this.getUserId());
+        let path = '/getprofile';
         let options  = { // OPTIONAL
-            headers: {}, // OPTIONAL
+            headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
             response: true // OPTIONAL (return entire response object instead of response.data)
         };
         console.log(options);
@@ -60,7 +61,10 @@ class App extends Component {
             console.log(response);
             self.setState({userProfile : response.data});
         })
-            .catch(p1 => {console.log(p1);});
+            .catch(p1 => {
+                console.log(p1);
+                self.setState({userProfile : "error"});
+            });
     }
 
 
