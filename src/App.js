@@ -4,6 +4,7 @@ import Amplify, { API } from 'aws-amplify';
 import {withAuthenticator} from 'aws-amplify-react';
 
 import UserProfile from './components/UserProfile'
+import Header from './components/Header'
 
 //Amplify.Logger.LOG_LEVEL = 'DEBUG';
 //window.LOG_LEVEL = 'DEBUG';
@@ -40,15 +41,8 @@ class App extends Component {
         this.gitProfile();
     }
 
-    getUserId = () => {
-        if (this.props.authState === "signedIn")
-            return this.props.authData.signInUserSession.idToken.payload.sub;
-        return "";
-    }
-
     gitProfile(){
         const self = this;
-        //let path = '/getprofile?uid='+ encodeURIComponent(this.getUserId());
         let path = '/getprofile';
         let options  = { // OPTIONAL
             headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
@@ -67,14 +61,14 @@ class App extends Component {
             });
     }
 
-
     render() {
         return (
             <div className="App">
+                <Header logOutHandler = {this.props.onStateChange}/>
                 <UserProfile auth={{authState: this.props.authState, authData: this.props.authData}} userProfile={this.state.userProfile}/>
             </div>
         );
     }
 }
 
-export default withAuthenticator(App, true);
+export default withAuthenticator(App);

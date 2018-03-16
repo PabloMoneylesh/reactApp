@@ -8,7 +8,7 @@ class ProfileData extends Component {
         this.state = this.parseProfile(this.props.profile);
     }
 
-    parseProfile = (profileString) =>{
+    parseProfile = (profileString) => {
         try {
             return {profile: JSON.parse(profileString)};
         }
@@ -25,8 +25,17 @@ class ProfileData extends Component {
         if (this.state.profile.objects) {
             return (
                 <table>
-                    <tr><td>id</td><td>startDate</td><td>endDate</td><td>object</td></tr>
-                    {this.state.profile.objects.map(object =>{return <ProfileObject profile={object} />})}
+                    <tbody>
+                    <tr>
+                        <td>id</td>
+                        <td>startDate</td>
+                        <td>endDate</td>
+                        <td>object</td>
+                    </tr>
+                    {this.state.profile.objects.map(object => {
+                        return <ProfileObject profile={object}/>
+                    })}
+                    </tbody>
                 </table>
             )
         }
