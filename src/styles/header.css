@@ -1,0 +1,19 @@
+.header {
+    position: static;
+    height: 50px;
+}
+
+.greeting {
+    position: fixed;
+    right: 20px;
+    top: 10px;
+}
+
+.nav-menu ul {
+    list-style: none;
+}
+
+.nav-menu li {
+    display: inline;
+    margin: 10px;
+}

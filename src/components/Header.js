@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
-import Amplify, { API } from 'aws-amplify';
+import Amplify from 'aws-amplify';
+import '../styles/header.css'
+import {Link} from "react-router-dom";
 
 class Header extends Component {
     constructor(props) {
@@ -9,8 +11,8 @@ class Header extends Component {
     }
 
     signOut = () => {
-        var self= this;
-       Amplify.Auth.signOut().then(function () {
+        var self = this;
+        Amplify.Auth.signOut().then(function () {
             console.log("signOutDone");
             self.logOutHandler();
         })['catch'](function (err) {
@@ -22,8 +24,26 @@ class Header extends Component {
     render() {
 
         return (
-            <div>
-                <button onClick={this.signOut}>LogOut</button>
+            <div class="header">
+                <nav className="nav-menu">
+                    <ul>
+                        <li><Link to="/">Home</Link></li>
+                        <li><Link to="/catalog">Catalog</Link></li>
+                        <li><Link to="/profile">Profile</Link></li>
+                    </ul>
+                </nav>
+                {this.props.authState === "signedIn" ?
+                    <div class="greeting">
+                        <span>Hello </span>
+                        <button onClick={this.signOut}>LogOut</button>
+                    </div>
+                    :
+                    <div class="greeting">
+                        <Link to="/profile">Profile</Link>
+                    </div>
+                }
+
+
             </div>
         );
     }
