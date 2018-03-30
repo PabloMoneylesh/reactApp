@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from "react-router-dom";
 
 class CatalogItem extends Component {
     seeItem = () => {
@@ -14,7 +15,7 @@ class CatalogItem extends Component {
                 <td>{this.props.item.type}</td>
                 <td>{this.props.item.version}</td>
                 <td>{this.props.item.isPaid}</td>
-                <td><button  onClick={this.seeItem}>get</button></td>
+                <td><Link to={`/catalog/${ this.props.item.id }`}>Read More</Link></td>
             </tr>
         )
     }

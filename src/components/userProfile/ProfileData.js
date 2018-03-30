@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import ProfileObject from './ProfileObject';
+import Data from "../data/CatalogData"
 
 class ProfileData extends Component {
     constructor(props) {
@@ -19,6 +20,20 @@ class ProfileData extends Component {
     };
 
 
+    enrichProfileObjectData(object){
+        var catalogItem = Data.catalogData.getById(object.objectId);
+
+        object.object = {
+            "name": catalogItem.name,
+            "bucket": catalogItem.bucket,
+            "key": catalogItem.key
+        }
+
+
+        return object;
+    }
+
+
     render() {
         console.log(this);
         console.log(this.state.profile.objects);
@@ -33,7 +48,7 @@ class ProfileData extends Component {
                         <td>object</td>
                     </tr>
                     {this.state.profile.objects.map(object => {
-                        return <ProfileObject profile={object}/>
+                        return <ProfileObject profile={this.enrichProfileObjectData(object)}/>
                     })}
                     </tbody>
                 </table>

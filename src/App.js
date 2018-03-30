@@ -12,6 +12,10 @@ import AuthConfig from './configuration/AuthConfig'
 import APIConfig from './configuration/APIConfig'
 
 import Catalog from './components/catalog/Catalog'
+import Item from './components/catalog/Item'
+
+import Subscribe from "./components/subscription/Subscribe";
+
 import UserProfile from "./components/userProfile/UserProfile";
 
 //Amplify.Logger.LOG_LEVEL = 'DEBUG';
@@ -42,7 +46,9 @@ class App extends Component {
 
 
                     <Route exact path="/" component={Catalog}/>
-                    <Route path="/catalog" component={Catalog}/>
+                    <Route exact path="/catalog" component={Catalog}/>
+                        <Route path="/catalog/:itemId" component={Item}/>
+                    <Route path="/subscribe/:itemId" component={Subscribe}/>
                     <Route path="/profile" component={UserProfile}/>
                     </div>
                 </BrowserRouter>

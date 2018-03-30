@@ -24,7 +24,7 @@ class Header extends Component {
     render() {
 
         return (
-            <div class="header">
+            <div className="header">
                 <nav className="nav-menu">
                     <ul>
                         <li><Link to="/">Home</Link></li>
@@ -33,12 +33,12 @@ class Header extends Component {
                     </ul>
                 </nav>
                 {this.props.authState === "signedIn" ?
-                    <div class="greeting">
+                    <div className="greeting">
                         <span>Hello </span>
                         <button onClick={this.signOut}>LogOut</button>
                     </div>
                     :
-                    <div class="greeting">
+                    <div className="greeting">
                         <Link to="/profile">Profile</Link>
                     </div>
                 }

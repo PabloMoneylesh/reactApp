@@ -6,7 +6,9 @@ export const catalogData = {
             description: "Simple table of contents",
             type: "plugin",
             version: 1.0,
-            isPaid: true
+            isPaid: true,
+            bucket: "pavelb-test.bkt.zooplus.io",
+            key: "test/terraform.tfstate"
         },
         {
             id: "2",
@@ -14,7 +16,9 @@ export const catalogData = {
             description: "",
             type: "plugin",
             version: 0.1,
-            isPaid: false
+            isPaid: false,
+            bucket: "pavelb-test.bkt.zooplus.io",
+            key: "test/terraform.tfstate"
         },
         {
             id: "3",
@@ -22,9 +26,33 @@ export const catalogData = {
             description: "Microdata injector",
             type: "module",
             version: 1.1,
-            isPaid: false
+            isPaid: false,
+            bucket: "pavelb-test.bkt.zooplus.io",
+            key: "test/terraform.tfstate"
         }
-    ]
+    ],
+
+
+    getById (id) {
+        //return this.items.find(item => item.id === 1);
+        var obj;
+        for (let item of this.items) {
+            if (item.id == id) {
+                obj = item;
+                break;
+            }
+        }
+
+       return obj;
+    }
+
+
 };
+
+
+
+
+
+
 
 export default {catalogData};

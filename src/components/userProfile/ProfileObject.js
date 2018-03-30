@@ -12,6 +12,8 @@ class ProfileData extends Component {
         alert(bucket + " " + objKey);
     }
 
+
+
 render() {
     return (
         <tr>

@@ -1,22 +1,57 @@
 import React, {Component} from 'react';
+import Data from "../data/CatalogData"
+import Header from "../Header";
+import {Link} from "react-router-dom";
 
 class Item extends Component {
-    seeItem = () => {
-        alert(this.props.item.id);
+    constructor(props) {
+        super(props);
+
+        this.state = {};
     }
 
+    componentDidMount() {
+        this.loadData();
+    }
+
+    findById(item) {
+        return item.id == this.props.match.params.itemId;
+    }
+
+    loadData() {
+        this.setState({itemData: Data.catalogData.items.find(this.findById, this)});
+    }
+
+    renderContent() {
+        if (this.state.itemData) {
+            return (
+                <div>
+                    <p>{this.state.itemData.name}</p>
+                    <p>{this.state.itemData.description}</p>
+                    <p>{this.state.itemData.type}</p>
+                    <p>{this.state.itemData.version}</p>
+                    <p>{this.state.itemData.isPaid}</p>
+                    <p><Link to={`/subscribe/${ this.props.match.params.itemId }`}>Get It!</Link></p>
+                </div>
+            )
+        }
+        else {
+            return (<p>Loading...</p>);
+        }
+    }
+
+
     render() {
+        console.log(this);
         return (
-            <tr>
-                <td>{this.props.item.id}</td>
-                <td>{this.props.item.name}</td>
-                <td>{this.props.item.description}</td>
-                <td>{this.props.item.type}</td>
-                <td>{this.props.item.version}</td>
-                <td>{this.props.item.isPaid}</td>
-                <td><button  onClick={this.seeItem}>get</button></td>
-            </tr>
+            <div>
+                <Header/>
+                <p>Item {this.props.match.params.itemId}</p>
+                {this.renderContent()}
+            </div>
         )
     }
 }
+
 export default Item;
+
