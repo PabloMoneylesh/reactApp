@@ -21,7 +21,7 @@ class ProfileData extends Component {
 
 
     enrichProfileObjectData(object){
-        var catalogItem = Data.catalogData.getById(object.objectId);
+        var catalogItem = Data.catalogData.getById(object.itemId);
         if (!catalogItem){
              object.object = {
                 "name": "",

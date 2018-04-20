@@ -16,7 +16,6 @@ Amplify.configure({
 });
 
 
-
 class Subscribe extends Component {
     constructor(props) {
         super(props);
@@ -48,18 +47,22 @@ class Subscribe extends Component {
         let path = '/subscribe';
         let options  = { // OPTIONAL
             headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
+            body: { //objectUniqueId, objectId, subscriptionPeriod
+                itemId: this.props.match.params.itemId,
+                itemUniqueId: Math.random().toString(36).substring(7),
+                subscriptionPeriod: 12
+            },
             response: true // OPTIONAL (return entire response object instead of response.data)
         };
         console.log(options);
-        API.get("ProfileApi", path, options )
+        API.post("ProfileApi", path, options )
             .then(response => {
                 console.log("response:");
                 console.log(response);
-                self.setState({userProfile : response.data});
+                this.props.history.push('/profile')
             })
             .catch(p1 => {
                 console.log(p1);
-                self.setState({userProfile : "error"});
             });
     }
 
