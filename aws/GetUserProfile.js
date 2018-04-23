@@ -4,82 +4,98 @@ var AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-central-1'});
 var db = new AWS.DynamoDB();
 
+var dbConnection = new AWS.DynamoDB({region: 'eu-central-1', apiVersion: '2012-08-10'});
+
 exports.handler = (event, context, callback) => {
     /*console.log('event =');
     console.log(event);
     console.log('context =');
     console.log( event.requestContext.authorizer.claims['cognito:username']);*/
-    //var uid = event.queryStringParameters.uid;
-    var uid = event.requestContext.authorizer.claims['cognito:username']
+    //var uid = "4e00135a-7d3a-48b4-9c9e-da0bd0b2967c";
+    var uid = "0ad8d29b-124a-4374-b189-e4f78342d0e0";
+
+    //var uid = event.requestContext.authorizer.claims['cognito:username']
+
     console.log('uid =', uid);
 
     if(!uid){
-        createErrorResponse('wrong UId',callback);
+        createResponse(400, {status: "No user Id found in request"}, callback)
         return;
     }
 
-    readItem(uid, callback);
-
-};
-
-
-function readItem(rowKey, callback) {
-
-    var params = {
+    var dbParams = {
         TableName: "pavelb-userProfile",
         Key: {
             "uid": {
-                "S": rowKey
+                "S": uid
             }
         }
     }
 
-    db.getItem(params, function (err, data) {
-        console.log("getItem:" + rowKey + ";");
-        if (err) {
-            console.log(err, err.stack);// an error occurred
-            createResponse({}, callback);
-        }
-        else {
-            console.log(data);           // successful response
+    dbConnection.getItem(dbParams).promise()
+        .then(response => {
+            return isValidProfileFound(response) ? parseProfile(response):
+                createProfile(uid).then(insertResponse =>{return JSON.parse(insertResponse.Attributes.profile.S)});
 
-            if(data.Item){
-                createResponse(data.Item.profile.S, callback);
-            }
-            createResponse({}, callback);
+        })
+        .then(profile =>{
+            console.log(profile);
+            createResponse(200, profile, callback);
+        })
+        .catch(error => createResponse(400, {status: error.message}, callback) );
 
-        }
-    });
+    //readItem(uid, callback);
+
+};
+
+function isValidProfileFound (response){
+    console.log(response);
+    if(response.Item && response.Item.profile){
+        return true;
+    }
+
+    return false;
+
 }
 
-function createResponse(content, callback) {
-    console.log('content =', content);
+function parseProfile(response) {
+    return JSON.parse(response.Item.profile.S);
+}
 
-    const response = {
-        statusCode: 200,
-        headers: {
-            'Content-Type': 'application/json',
-            'access-control-allow-headers':'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-            'access-control-allow-methods':'GET,OPTIONS',
-            'access-control-allow-origin':'*',
+function createProfile(uid){
+    console.log("createProfile for: " + uid);
+    let dbParams = {
+        TableName: "pavelb-userProfile",
+        Key: {
+            "uid": {
+                "S": uid
+            }
         },
-        body: JSON.stringify(content)
+        AttributeUpdates: {
+            profile: {
+                Action: 'PUT',
+                Value: {S: "{\"objects\":[]}"}
+            }
+        },
+        "ReturnValues": "UPDATED_NEW"
     };
 
-    callback(null, response);
+    return dbConnection.updateItem(dbParams).promise();
+
 }
 
-function createErrorResponse(message, callback) {
 
+
+function createResponse(status, content, callback) {
     const response = {
-        statusCode: 400,
+        statusCode: status,
         headers: {
             'Content-Type': 'application/json',
-            'access-control-allow-headers':'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
-            'access-control-allow-methods':'GET,OPTIONS',
-            'access-control-allow-origin':'*',
+            'access-control-allow-headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
+            'access-control-allow-methods': 'GET,OPTIONS',
+            'access-control-allow-origin': '*',
         },
-        body: message
+        body: JSON.stringify(content)
     };
 
     callback(null, response);

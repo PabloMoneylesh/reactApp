@@ -5,11 +5,13 @@ import Data from "../data/CatalogData"
 class ProfileData extends Component {
     constructor(props) {
         super(props);
+        console.log(this);
 
-        this.state = this.parseProfile(this.props.profile);
+        this.state = {profile: this.props.profile};
     }
 
-    parseProfile = (profileString) => {
+    /*parseProfile = (profileString) => {
+        console.log("profileString: " + profileString);
         try {
             return {profile: JSON.parse(profileString)};
         }
@@ -17,7 +19,7 @@ class ProfileData extends Component {
             console.log(e);
         }
 
-    };
+    };*/
 
 
     enrichProfileObjectData(object){
@@ -45,8 +47,8 @@ class ProfileData extends Component {
 
 
     render() {
-        console.log(this);
-        console.log(this.state.profile.objects);
+       // console.log(this);
+
         if (this.state.profile.objects) {
             return (
                 <table>
@@ -63,6 +65,9 @@ class ProfileData extends Component {
                     </tbody>
                 </table>
             )
+        }
+        else if (this.state.profile.state == "notFound"){
+            console.log("profile not Found");
         }
         return (
             <div>

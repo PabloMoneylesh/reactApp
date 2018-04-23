@@ -41,9 +41,8 @@ class UserProfile extends Component {
         console.log(options);
         API.get("ProfileApi", path, options )
             .then(response => {
-                console.log("response:");
-                console.log(response);
-                self.setState({userProfile : response.data});
+                console.log("response: " + JSON.stringify(response));
+                self.setState({userProfile :response.data});
             })
             .catch(p1 => {
                 console.log(p1);
@@ -76,7 +75,7 @@ class UserProfile extends Component {
         return (
             <div>
                 <Header logOutHandler={this.props.onStateChange} authState = {this.props.authState}/>
-                <div class="user-profile">
+                <div className="user-profile">
                     <p>User email: {this.getUserName()}</p>
                     <p>User id: {this.getUserId()}</p>
                 </div>
