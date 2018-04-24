@@ -17,7 +17,6 @@ Amplify.configure({
 });
 
 
-
 class UserProfile extends Component {
     constructor(props) {
         super(props);
@@ -51,14 +50,14 @@ class UserProfile extends Component {
     }
 
     getUserName = () => {
-        if (this.state.authState === "signedIn")
-            return this.state.authData.signInUserSession.idToken.payload.email;
+        if (this.props.authState === "signedIn")
+            return this.props.authData.signInUserSession.idToken.payload.email;
         return "";
     }
 
     getUserId = () => {
-        if (this.state.authState === "signedIn")
-            return this.state.authData.signInUserSession.idToken.payload.sub;
+        if (this.props.authState === "signedIn")
+            return this.props.authData.signInUserSession.idToken.payload.sub;
         return "";
     }
 

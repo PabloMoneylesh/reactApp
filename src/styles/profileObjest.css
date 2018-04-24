@@ -1,0 +1,7 @@
+.download-link-hidden {
+    display: none;
+}
+
+.download-link {
+    display: inline-block;
+}

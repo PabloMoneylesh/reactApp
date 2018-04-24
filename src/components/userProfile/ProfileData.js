@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import ProfileObject from './ProfileObject';
 import Data from "../data/CatalogData"
+import {withAuthenticator} from 'aws-amplify-react';
 
 class ProfileData extends Component {
     constructor(props) {
@@ -9,18 +10,6 @@ class ProfileData extends Component {
 
         this.state = {profile: this.props.profile};
     }
-
-    /*parseProfile = (profileString) => {
-        console.log("profileString: " + profileString);
-        try {
-            return {profile: JSON.parse(profileString)};
-        }
-        catch (e) {
-            console.log(e);
-        }
-
-    };*/
-
 
     enrichProfileObjectData(object){
         var catalogItem = Data.catalogData.getById(object.itemId);
@@ -77,4 +66,4 @@ class ProfileData extends Component {
     }
 }
 
-export default ProfileData;
+export default withAuthenticator(ProfileData);
