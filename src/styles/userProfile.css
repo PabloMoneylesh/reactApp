@@ -1,4 +1,7 @@
-.user-profile {
-    position: fixed;
-    left: 20px;
+.profile-user-details{
+    width: 300px;
+    margin: 20px;
+    padding: 10px;
+    textAlign: center;
+    display: block;
 }

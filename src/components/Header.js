@@ -3,6 +3,24 @@ import Amplify from 'aws-amplify';
 import '../styles/header.css'
 import {Link} from "react-router-dom";
 
+import AppBar from 'material-ui/AppBar';
+import FlatButton from 'material-ui/FlatButton';
+
+const menuButtons = (
+    <nav>
+        <FlatButton label="Home"
+                    containerElement={<Link to="/"/>}
+                    />
+        <FlatButton label="Catalog"
+                    containerElement={<Link to="/catalog"/>}
+                    />
+        <FlatButton label="Profile"
+                    containerElement={<Link to="/profile"/>}
+                   />
+
+    </nav>
+);
+
 class Header extends Component {
     constructor(props) {
         super(props);
@@ -17,34 +35,28 @@ class Header extends Component {
             self.logOutHandler();
         })['catch'](function (err) {
             console.log(err);
-            //logger.error(err);_this2.error(err);
         });
     }
 
+    getRightMenuButton = () =>{
+       return this.props.authState === "signedIn" ?
+           <FlatButton label="LogOut"
+                       onClick = {this.signOut}
+                       />
+            :
+           <FlatButton label="LogIn"
+                       containerElement={<Link to="/profile"/>}
+                       />
+
+    }
     render() {
 
         return (
-            <div className="header">
-                <nav className="nav-menu">
-                    <ul>
-                        <li><Link to="/">Home</Link></li>
-                        <li><Link to="/catalog">Catalog</Link></li>
-                        <li><Link to="/profile">Profile</Link></li>
-                    </ul>
-                </nav>
-                {this.props.authState === "signedIn" ?
-                    <div className="greeting">
-                        <span>Hello </span>
-                        <button onClick={this.signOut}>LogOut</button>
-                    </div>
-                    :
-                    <div className="greeting">
-                        <Link to="/profile">Profile</Link>
-                    </div>
-                }
-
-
-            </div>
+            <AppBar
+                iconElementLeft={menuButtons}
+                iconElementRight={this.getRightMenuButton()}
+            >
+            </AppBar>
         );
     }
 }

@@ -50,9 +50,4 @@ export const catalogData = {
 };
 
 
-
-
-
-
-
 export default {catalogData};

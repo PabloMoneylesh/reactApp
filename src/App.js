@@ -4,6 +4,7 @@ import Amplify from 'aws-amplify';
 
 import {BrowserRouter, Link, Route} from "react-router-dom";
 import createBrowserHistory from "history/createBrowserHistory";
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 
 
@@ -12,7 +13,7 @@ import AuthConfig from './configuration/AuthConfig'
 import APIConfig from './configuration/APIConfig'
 
 import Catalog from './components/catalog/Catalog'
-import Item from './components/catalog/Item'
+import CatalogItem from './components/catalog/CatalogItem'
 
 import Subscribe from "./components/subscription/Subscribe";
 
@@ -39,6 +40,8 @@ class App extends Component {
 
     render() {
         return (
+            <MuiThemeProvider>
+
             <div className="App">
 
                 <BrowserRouter histiry={history}>
@@ -47,7 +50,7 @@ class App extends Component {
 
                     <Route exact path="/" component={Catalog}/>
                     <Route exact path="/catalog" component={Catalog}/>
-                        <Route path="/catalog/:itemId" component={Item}/>
+                        <Route path="/catalog/:itemId" component={CatalogItem}/>
                     <Route path="/subscribe/:itemId" component={Subscribe}/>
                     <Route path="/profile" component={UserProfile}/>
                     </div>
@@ -55,6 +58,7 @@ class App extends Component {
 
 
             </div>
+            </MuiThemeProvider>
         );
     }
 }

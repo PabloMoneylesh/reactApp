@@ -10,6 +10,8 @@ import AuthConfig from '../../configuration/AuthConfig'
 import APIConfig from '../../configuration/APIConfig'
 
 import Header from '../Header'
+import Paper from 'material-ui/Paper';
+import CircularProgress from 'material-ui/CircularProgress';
 
 Amplify.configure({
     Auth: AuthConfig.auth,
@@ -66,7 +68,7 @@ class UserProfile extends Component {
             return <ProfileData profile={this.state.userProfile}/>;
         }
 
-        return <p>loading...</p>
+        return <CircularProgress />
     }
 
     render() {
@@ -74,10 +76,11 @@ class UserProfile extends Component {
         return (
             <div>
                 <Header logOutHandler={this.props.onStateChange} authState = {this.props.authState}/>
-                <div className="user-profile">
+                <Paper zDepth={3} className="profile-user-details">
+                    <p>Your account details:</p>
                     <p>User email: {this.getUserName()}</p>
-                    <p>User id: {this.getUserId()}</p>
-                </div>
+                </Paper>
+
                 <div>
                     {this.getProfile()}
                 </div>

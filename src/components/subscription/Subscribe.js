@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import '../../styles/userProfile.css'
+import '../../styles/subscribe.css'
 
 import Amplify, { API } from 'aws-amplify';
 import {withAuthenticator} from 'aws-amplify-react';
@@ -9,6 +9,10 @@ import AuthConfig from '../../configuration/AuthConfig'
 import APIConfig from '../../configuration/APIConfig'
 
 import Header from '../Header'
+import Data from "../data/CatalogData"
+
+import Paper from 'material-ui/Paper';
+import RaisedButton from 'material-ui/RaisedButton';
 
 Amplify.configure({
     Auth: AuthConfig.auth,
@@ -21,7 +25,16 @@ class Subscribe extends Component {
         super(props);
 
         this.state = {};
+        this.itemData = {};
+        this.loadData();
+    }
 
+    findById(item) {
+        return item.id == this.props.match.params.itemId;
+    }
+
+    loadData() {
+        this.itemData = Data.catalogData.items.find(this.findById, this);
     }
 
     getUserName = () => {
@@ -33,12 +46,6 @@ class Subscribe extends Component {
     getUserId = () => {
         if (this.props.authState === "signedIn")
             return this.props.authData.signInUserSession.idToken.payload.sub;
-        return "";
-    }
-
-    getSubscriptionButton = () => {
-        if (this.props.authState === "signedIn")
-            return (<button onClick={this.subsribe}> get It!</button>);
         return "";
     }
 
@@ -54,15 +61,13 @@ class Subscribe extends Component {
             },
             response: true // OPTIONAL (return entire response object instead of response.data)
         };
-        console.log(options);
         API.post("ProfileApi", path, options )
             .then(response => {
-                console.log("response:");
-                console.log(response);
                 this.props.history.push('/profile')
             })
-            .catch(p1 => {
-                console.log(p1);
+            .catch(error => {
+                console.log(error);
+                alert("something went wrong...<br>refresh the page and try one more time.");
             });
     }
 
@@ -73,12 +78,19 @@ class Subscribe extends Component {
         return (
             <div>
                 <Header logOutHandler={this.props.onStateChange} authState = {this.props.authState}/>
-                <p>Item {this.props.match.params.itemId}</p>
-                <div className="user-subscribe">
-                    <p>User email: {this.getUserName()}</p>
-                    <p>User id: {this.getUserId()}</p>
-                    <p>{this.getSubscriptionButton()}</p>
-                </div>
+                <Paper zDepth={3} className="subscribe-user-details">
+                    <p>Your account details:</p>
+                    <p>email: {this.getUserName()}</p>
+                </Paper>
+                <Paper zDepth={2} className="subscribe-item-details">
+                    <p>You are about to get:</p>
+                    <p>{this.itemData.name}</p>
+                </Paper>
+
+                <RaisedButton  label="Get It!"
+                            onClick={this.subsribe}
+                            primary={true}
+                />
 
             </div>
         );
