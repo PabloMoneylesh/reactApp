@@ -82,7 +82,9 @@ class UserProfile extends Component {
         if (this.state.userProfile && this.state.catalogItems) {
             return this.state.userProfile.objects.map(object => {
                 let catalogItem = this.findCatalogItem(object.itemId);
-                object.name = catalogItem.name;
+                if(catalogItem) {
+                    object.name = catalogItem.name;
+                }
                 return <ProfileObject profile={{"object": object}}/>
             })
         }
