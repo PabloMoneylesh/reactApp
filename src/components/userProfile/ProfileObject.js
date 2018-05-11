@@ -26,7 +26,7 @@ class ProfileData extends Component {
     }
 
     getPresignedUrl = () => {
-        let path = '/getlink?id='+ this.props.profile.id;
+        let path = '/getlink?id='+ this.props.profile.object.id;
         let options  = {
             headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken},
             response: true

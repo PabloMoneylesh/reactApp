@@ -2,14 +2,13 @@ import React, {Component} from 'react';
 
 import '../../styles/subscribe.css'
 
-import Amplify, { API } from 'aws-amplify';
+import Amplify, {API} from 'aws-amplify';
 import {withAuthenticator} from 'aws-amplify-react';
 
 import AuthConfig from '../../configuration/AuthConfig'
 import APIConfig from '../../configuration/APIConfig'
 
 import Header from '../Header'
-import Data from "../data/CatalogData"
 
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -25,16 +24,11 @@ class Subscribe extends Component {
         super(props);
 
         this.state = {};
-        this.itemData = {};
-        this.loadData();
-    }
 
-    findById(item) {
-        return item.id == this.props.match.params.itemId;
-    }
-
-    loadData() {
-        this.itemData = Data.catalogData.items.find(this.findById, this);
+        if (this.props.location && this.props.location.itemData) {
+            //console.log(this.props.location.itemData);
+            this.itemData = this.props.location.itemData;
+        }
     }
 
     getUserName = () => {
@@ -45,7 +39,7 @@ class Subscribe extends Component {
 
     subsribe = () => {
         let path = '/subscribe';
-        let options  = { // OPTIONAL
+        let options = { // OPTIONAL
             headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
             body: { //objectUniqueId, objectId, subscriptionPeriod
                 itemId: this.props.match.params.itemId,
@@ -54,7 +48,7 @@ class Subscribe extends Component {
             },
             response: true // OPTIONAL (return entire response object instead of response.data)
         };
-        API.post("ProfileApi", path, options )
+        API.post("ProfileApi", path, options)
             .then(response => {
                 this.props.history.push('/profile')
             })
@@ -64,25 +58,39 @@ class Subscribe extends Component {
             });
     }
 
+    renderItemDetails() {
+
+        if (this.itemData)
+            return (
+                <div>
+                    <p>You are about to get:</p>
+                    <p>{this.itemData.name}</p>
+                    <p>version: {this.itemData.version}</p>
+                    <p>Is Paid: {this.itemData.isPaid ? "Yes" : "No"}</p>
+                    <RaisedButton label="Get It!"
+                                  onClick={this.subsribe}
+                                  primary={true}
+                    />
+                </div>
+            )
+        else
+            return (
+                <p>Something went wrong...</p>
+            )
+    }
+
     render() {
         console.log(this);
         return (
             <div>
-                <Header logOutHandler={this.props.onStateChange} authState = {this.props.authState}/>
+                <Header logOutHandler={this.props.onStateChange} authState={this.props.authState}/>
                 <Paper zDepth={3} className="subscribe-user-details">
                     <p>Your account details:</p>
                     <p>email: {this.getUserName()}</p>
                 </Paper>
                 <Paper zDepth={2} className="subscribe-item-details">
-                    <p>You are about to get:</p>
-                    <p>{this.itemData.name}</p>
+                    {this.renderItemDetails()}
                 </Paper>
-
-                <RaisedButton  label="Get It!"
-                            onClick={this.subsribe}
-                            primary={true}
-                />
-
             </div>
         );
     }

@@ -6,13 +6,13 @@ import { API } from 'aws-amplify';
 
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import CircularProgress from 'material-ui/CircularProgress';
 import {Link} from "react-router-dom";
 
 
 class Catalog extends Component {
     constructor(props) {
         super(props);
-
         this.state = {};
     }
 
@@ -21,37 +21,33 @@ class Catalog extends Component {
     }
 
     loadData() {
-       // this.setState({catalogItems: Data.catalogData.items});
-
         const self = this;
         let path = '/getcatalog';
         let options  = { // OPTIONAL
-            //headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
             response: true // OPTIONAL (return entire response object instead of response.data)
         };
 
         API.get("ProfileApi", path, options )
             .then(response => {
-                console.log("response: " + JSON.stringify(response));
+                //console.log("response: " + JSON.stringify(response));
                 self.setState({catalogItems :response.data.items});
             })
             .catch(p1 => {
                 console.log(p1);
-                self.setState({userProfile : "error"});
+                //self.setState({userProfile : "error"});
             });
 
     }
 
     renderItems() {
-        console.log(this);
+        //console.log(this);
         if (this.state.catalogItems) {
             return (
-
                     this.state.catalogItems.map(object => {return <CatalogCard item={object}/>})
             )
         }
         else {
-            return (<p>Loading...</p>);
+            return <CircularProgress />
         }
     }
 

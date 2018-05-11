@@ -1,9 +1,9 @@
 import React, {Component} from 'react';
-import ProfileData from './ProfileData'
+import ProfileObject from './ProfileObject';
 
 import '../../styles/userProfile.css'
 
-import Amplify, { API } from 'aws-amplify';
+import Amplify, {API} from 'aws-amplify';
 import {withAuthenticator} from 'aws-amplify-react';
 
 import AuthConfig from '../../configuration/AuthConfig'
@@ -27,27 +27,27 @@ class UserProfile extends Component {
 
     componentDidMount() {
         this.gitProfile();
-       // this.loadCatalogData();
+        this.loadCatalogData();
     }
 
-    gitProfile(){
+    gitProfile() {
         console.log("UserProfile -gitProfile");
         const self = this;
         let path = '/getprofile';
-        let options  = { // OPTIONAL
+        let options = { // OPTIONAL
             headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
             response: true // OPTIONAL (return entire response object instead of response.data)
         };
 
-        API.get("ProfileApi", path, options )
+        API.get("ProfileApi", path, options)
             .then(response => {
                 console.log("UserProfile -gitProfile - done");
                 //console.log("response: " + JSON.stringify(response));
-                self.setState({userProfile :response.data});
+                self.setState({userProfile: response.data});
             })
             .catch(p1 => {
                 console.log(p1);
-                self.setState({userProfile : "error"});
+                self.setState({userProfile: "error"});
             });
     }
 
@@ -55,16 +55,16 @@ class UserProfile extends Component {
         console.log("UserProfile -loadCatalogData");
         const self = this;
         let path = '/getcatalog';
-        let options  = { // OPTIONAL
+        let options = { // OPTIONAL
             //headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
             response: true // OPTIONAL (return entire response object instead of response.data)
         };
 
-        API.get("ProfileApi", path, options )
+        API.get("ProfileApi", path, options)
             .then(response => {
                 console.log("UserProfile -loadCatalogData - done");
                 //console.log("response: " + JSON.stringify(response));
-                self.setState({catalogItems :response.data.items});
+                self.setState({catalogItems: response.data.items});
             })
             .catch(p1 => {
                 console.log(p1);
@@ -78,25 +78,40 @@ class UserProfile extends Component {
         return "";
     }
 
-    getProfile () {
-        if (this.state.userProfile ) {
-            return <ProfileData profile={this.state.userProfile} catalog={this.state.catalogItems}/>;
+    renderProfileContent() {
+        if (this.state.userProfile && this.state.catalogItems) {
+            return this.state.userProfile.objects.map(object => {
+                let catalogItem = this.findCatalogItem(object.itemId);
+                object.name = catalogItem.name;
+                return <ProfileObject profile={{"object": object}}/>
+            })
         }
-        return <CircularProgress />
+        return <CircularProgress/>
+    }
+
+    findCatalogItem(id) {
+        var obj;
+        for (let item of this.state.catalogItems) {
+            if (item.id == id) {
+                obj = item;
+                break;
+            }
+        }
+        return obj;
     }
 
     render() {
         console.log(this);
         return (
             <div>
-                <Header logOutHandler={this.props.onStateChange} authState = {this.props.authState}/>
+                <Header logOutHandler={this.props.onStateChange} authState={this.props.authState}/>
                 <Paper zDepth={3} className="profile-user-details">
                     <p>Your account details:</p>
                     <p>User email: {this.getUserName()}</p>
                 </Paper>
 
                 <div>
-                    {this.getProfile()}
+                    {this.renderProfileContent()}
                 </div>
             </div>
         );
