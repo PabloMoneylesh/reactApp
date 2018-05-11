@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import Amplify from 'aws-amplify';
 
-import {BrowserRouter, Link, Route} from "react-router-dom";
+import {BrowserRouter, Route} from "react-router-dom";
 import createBrowserHistory from "history/createBrowserHistory";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 

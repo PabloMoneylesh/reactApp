@@ -3,6 +3,9 @@
 var AWS = require('aws-sdk');
 AWS.config.update({region: 'eu-central-1'});
 
+var profileLambdaName = "pavelb-react-app-test";
+var catalogLambdaName = "pavelb-react-app-catalog";
+
 exports.handler = (event, context, callback) => {
 
     console.log(event);
@@ -26,19 +29,21 @@ exports.handler = (event, context, callback) => {
     }
 
     getUserProfile(uid, event)
-        .then(profile => checkIfObjectExistsInProfile(profile, itemUniqueId))
+        .then(profile => foundItemIdForObjectInProfile(profile, itemUniqueId))
         .then(
-            profileExists => profileExists ?  Promise.resolve(createResponse(200, {"url": getPresignedUrl(bucketName, fileKey)}, callback)) : Promise.reject("id not in profile")
+            itemId => getBucketAndKeyForItem(itemId, event)
         )
+        .then(
+            bucketAndKeyForItem => createResponse(200, {"url": getPresignedUrl(bucketAndKeyForItem)}, callback))
         .catch(error => console.log(createResponse(400, {status: "Something went wrong: " + error}, callback)));
 };
-
+//Promise.resolve(createResponse(200, {"url": getPresignedUrl(bucketName, fileKey)}, callback))
 function getUserProfile(uid, event){
     console.log("getUserProfile: " + uid);
     var lambda = new AWS.Lambda();
 
     return lambda.invoke({
-        FunctionName: 'pavelb-react-app-test',
+        FunctionName: profileLambdaName,
         Payload: JSON.stringify(event, null, 2)
     }).promise()
         .then(response => parseProfile(response));
@@ -49,17 +54,52 @@ function parseProfile(response){
     return JSON.parse(JSON.parse(response.Payload).body).objects;
 }
 
-function checkIfObjectExistsInProfile(profile, id){
+function foundItemIdForObjectInProfile(profile, id){
     let obj = profile.find(obj => obj.id == id);
-    return !(obj === undefined);
+    if (obj && obj.itemId) {
+        console.log("foundItemIdForObjectInProfile " + obj.itemId);
+        return obj.itemId
+    }
+
+    return null;
 }
 
-function getPresignedUrl (bucketName, fileKey){
-    console.log("getPresignedUrl: " + fileKey);
+function getBucketAndKeyForItem(itemId, event){
+    var lambda = new AWS.Lambda();
+
+    console.log("getBucketAndKeyForItem " + itemId);
+
+
+    let newEvent= event;
+    newEvent.queryStringParameters={"itemId": itemId};
+
+    return lambda.invoke({
+        FunctionName: catalogLambdaName,
+        Payload: JSON.stringify(newEvent, null, 2)
+    }).promise()
+        .then(response => parseCatalogItem(response));
+}
+
+function  parseCatalogItem(response){
+    console.log("parseCatalogItem");
+//console.log(response);
+    var bucketAndKeyForItem = {};
+    let respBody=JSON.parse(JSON.parse(response.Payload).body);
+
+    bucketAndKeyForItem.bucket=respBody.items[0].bucket;
+    bucketAndKeyForItem.key=respBody.items[0].key;
+    console.log("res: ");
+    console.log(bucketAndKeyForItem);
+    return bucketAndKeyForItem;
+}
+
+function getPresignedUrl (bucketAndKeyForItem){
+    console.log("getPresignedUrl: " );
+    console.log(bucketAndKeyForItem);
     var s3 = new AWS.S3();
     return s3.getSignedUrl('getObject', {
-        Bucket: bucketName,
-        Key: fileKey,
+        Bucket: bucketAndKeyForItem.bucket,
+        Key: bucketAndKeyForItem.key,
         Expires: 300
     });
 }

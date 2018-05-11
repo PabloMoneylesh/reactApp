@@ -25,7 +25,7 @@ class Header extends Component {
     constructor(props) {
         super(props);
         this.logOutHandler = props.logOutHandler;
-        console.log(this);
+        //console.log(this);
     }
 
     signOut = () => {

@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import Header from "../Header";
-import Data from "../data/CatalogData"
+
 import "../../styles/catalog.css"
+import { API } from 'aws-amplify';
 
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
@@ -20,10 +21,29 @@ class Catalog extends Component {
     }
 
     loadData() {
-        this.setState({catalogItems: Data.catalogData.items});
+       // this.setState({catalogItems: Data.catalogData.items});
+
+        const self = this;
+        let path = '/getcatalog';
+        let options  = { // OPTIONAL
+            //headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
+            response: true // OPTIONAL (return entire response object instead of response.data)
+        };
+
+        API.get("ProfileApi", path, options )
+            .then(response => {
+                console.log("response: " + JSON.stringify(response));
+                self.setState({catalogItems :response.data.items});
+            })
+            .catch(p1 => {
+                console.log(p1);
+                self.setState({userProfile : "error"});
+            });
+
     }
 
     renderItems() {
+        console.log(this);
         if (this.state.catalogItems) {
             return (
 
@@ -61,7 +81,13 @@ const CatalogCard = props => (
         />
         <CardActions>
             <FlatButton label="ReadMore"
-                        containerElement={<Link to={"/catalog/" + props.item.id} />}
+//                        containerElement={<Link to={"/catalog/" + props.item.id} params={{ data: props.item }} />}
+                        containerElement={<Link to={
+                                {
+                                    pathname: "/catalog/" + props.item.id,
+                                    data: props.item
+                                }
+                        } />}
 
             />
         </CardActions>

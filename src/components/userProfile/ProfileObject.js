@@ -40,8 +40,9 @@ class ProfileData extends Component {
                 self.setState({downloadLink: response.data.url, downloadLinkClass:"download-link", cardExpanded:true});
             })
             .catch(p1 => {
+                console.log("error while building download link");
                 console.log(p1);
-                alert("something went wrong...<br> refresh the page and try one more time.");
+                alert("Something went wrong... Refresh the page and try one more time.");
             });
 
     }

@@ -22,27 +22,27 @@ Amplify.configure({
 class UserProfile extends Component {
     constructor(props) {
         super(props);
-
         this.state = {};
-        // console.log("UserProfile");
-        //console.log(this.state);
     }
 
     componentDidMount() {
         this.gitProfile();
+       // this.loadCatalogData();
     }
 
     gitProfile(){
+        console.log("UserProfile -gitProfile");
         const self = this;
         let path = '/getprofile';
         let options  = { // OPTIONAL
             headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
             response: true // OPTIONAL (return entire response object instead of response.data)
         };
-        console.log(options);
+
         API.get("ProfileApi", path, options )
             .then(response => {
-                console.log("response: " + JSON.stringify(response));
+                console.log("UserProfile -gitProfile - done");
+                //console.log("response: " + JSON.stringify(response));
                 self.setState({userProfile :response.data});
             })
             .catch(p1 => {
@@ -51,23 +51,37 @@ class UserProfile extends Component {
             });
     }
 
+    loadCatalogData() {
+        console.log("UserProfile -loadCatalogData");
+        const self = this;
+        let path = '/getcatalog';
+        let options  = { // OPTIONAL
+            //headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
+            response: true // OPTIONAL (return entire response object instead of response.data)
+        };
+
+        API.get("ProfileApi", path, options )
+            .then(response => {
+                console.log("UserProfile -loadCatalogData - done");
+                //console.log("response: " + JSON.stringify(response));
+                self.setState({catalogItems :response.data.items});
+            })
+            .catch(p1 => {
+                console.log(p1);
+            });
+
+    }
+
     getUserName = () => {
         if (this.props.authState === "signedIn")
             return this.props.authData.signInUserSession.idToken.payload.email;
         return "";
     }
 
-    getUserId = () => {
-        if (this.props.authState === "signedIn")
-            return this.props.authData.signInUserSession.idToken.payload.sub;
-        return "";
-    }
-
-    getProfile = () => {
-        if (this.state.userProfile) {
-            return <ProfileData profile={this.state.userProfile}/>;
+    getProfile () {
+        if (this.state.userProfile ) {
+            return <ProfileData profile={this.state.userProfile} catalog={this.state.catalogItems}/>;
         }
-
         return <CircularProgress />
     }
 

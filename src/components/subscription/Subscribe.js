@@ -43,14 +43,7 @@ class Subscribe extends Component {
         return "";
     }
 
-    getUserId = () => {
-        if (this.props.authState === "signedIn")
-            return this.props.authData.signInUserSession.idToken.payload.sub;
-        return "";
-    }
-
     subsribe = () => {
-        const self = this;
         let path = '/subscribe';
         let options  = { // OPTIONAL
             headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
@@ -67,11 +60,9 @@ class Subscribe extends Component {
             })
             .catch(error => {
                 console.log(error);
-                alert("something went wrong...<br>refresh the page and try one more time.");
+                alert("something went wrong... refresh the page and try one more time.");
             });
     }
-
-
 
     render() {
         console.log(this);

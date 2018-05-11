@@ -7,7 +7,16 @@ var dbConnection = new AWS.DynamoDB({region: 'eu-central-1', apiVersion: '2012-0
 
 var newProfileObject;
 
+var profileTableName="pavelb-userProfile";
 
+/*
+add new entry to the user profile
+params:
+uid - user id from security context
+itemUniqueId - unique Id of the entry in users profile
+itemId - id of the file object from catalog
+subscriptionPeriod - period for subscription
+ */
 
 exports.handler = (event, context, callback) => {
     console.log(event);
@@ -22,12 +31,9 @@ exports.handler = (event, context, callback) => {
 
     newProfileObject = buildNewProfileObject(itemUniqueId, itemId, subscriptionPeriod);
 
-    var dbParams = {
-        TableName: "pavelb-userProfile",
-        Key: {"uid": {S: uid}}
-    };
 
-    dbConnection.getItem(dbParams).promise()
+
+    getUserProfile(uid)
         .then(response => {
             return JSON.parse(response.Item.profile.S);
         })
@@ -35,7 +41,7 @@ exports.handler = (event, context, callback) => {
             return updateProfile(profile, operationType, prepareNewProfileObject());
         })
         .then(profile => {
-            return writeProfiletoDB(prepareUpdateRequestParams(dbParams, profile));
+            return writeProfiletoDB(prepareUpdateRequestParams(profile));
         })
         .then(
             result => createResponse(200, {status: "OK"}, callback),
@@ -44,7 +50,21 @@ exports.handler = (event, context, callback) => {
         .catch(error => createResponse(400, {status: error.message}, callback) );
 
 };
+/*
+read profile from DB
+ */
+function getUserProfile(uid){
 
+    var dbParams = {
+        TableName: profileTableName,
+        Key: {"uid": {S: uid}}
+    };
+
+    return dbConnection.getItem(dbParams).promise();
+}
+/*
+add new entry to the profile object
+ */
 function updateProfile(profile, operationType, data) {
     if (operationType == "ADD") {
         let existingObject = profile.objects.find(obj => obj.itemId == data.itemId);
@@ -60,14 +80,20 @@ function updateProfile(profile, operationType, data) {
     return profile;
 
 }
-
+/*
+build request object for DB update
+ */
 function prepareUpdateRequestParams(dbParams, data){
-    dbParams.AttributeUpdates = {
-        profile: {
-            Action: 'PUT',
-            Value: {S: JSON.stringify(data)}
+    var dbParams = {
+        TableName: profileTableName,
+        Key: {"uid": {S: uid}},
+        AttributeUpdates: {
+            profile: {
+                Action: 'PUT',
+                Value: {S: JSON.stringify(data)}
+            }
         }
-    }
+    };
     return dbParams;
 }
 
