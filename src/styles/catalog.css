@@ -5,3 +5,11 @@
 .catalog-card-header{
     background-color: #0b97c4;
 }
+
+.catalog-item-description{
+    padding-left: 30px
+}
+
+.catalog-card-img{
+    max-width: 60%
+}

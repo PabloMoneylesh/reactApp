@@ -5,6 +5,8 @@ import {withAuthenticator} from 'aws-amplify-react';
 import APIConfig from '../../configuration/APIConfig'
 import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
+import Paper from 'material-ui/Paper';
+import ReactHtmlParser from 'react-html-parser';
 
 import '../../styles/profileObjest.css'
 
@@ -62,7 +64,7 @@ render() {
         >
             <CardHeader
                 title={this.props.profile.object.name}
-
+                subtitle={this.props.catalogItem.type + " v." + this.props.catalogItem.version}
                 actAsExpander={true}
                 showExpandableButton={true}
                 className="catalog-card-header"
@@ -74,13 +76,18 @@ render() {
                 />
             </CardActions>
             <CardText expandable={true}>
-                <div className={this.state.downloadLinkClass}>
+                <div className="catalog-item-description">
+                { ReactHtmlParser(this.props.catalogItem.description) }
+                </div>
+                <p>Is Paid: {this.props.catalogItem.isPaid ? "Yes" : "No"}</p>
+                <p>Valid from: {new Date(this.props.profile.object.startDate).toLocaleDateString()}</p>
+                <p>Valid to: {new Date(this.props.profile.object.endDate).toLocaleDateString() }</p>
+
+                <Paper zDepth={3}v className={this.state.downloadLinkClass}>
                     <p>Your download link:</p>
                     <a href={this.state.downloadLink} target="_blank">Download</a>
                     <p>This link is walid for 5 minutes.</p>
-                </div>
-                <p>Valid from: {this.props.profile.startDate}</p>
-                <p>Valid to: {this.props.profile.endDate}</p>
+                </Paper>
 
             </CardText>
         </Card>

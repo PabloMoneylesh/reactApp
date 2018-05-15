@@ -3,12 +3,9 @@ import Header from "../Header";
 
 import "../../styles/catalog.css"
 import { API } from 'aws-amplify';
-
-import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
-import FlatButton from 'material-ui/FlatButton';
 import CircularProgress from 'material-ui/CircularProgress';
-import {Link} from "react-router-dom";
 
+import {CatalogCard} from "./CatalogCard";
 
 class Catalog extends Component {
     constructor(props) {
@@ -40,10 +37,9 @@ class Catalog extends Component {
     }
 
     renderItems() {
-        //console.log(this);
         if (this.state.catalogItems) {
             return (
-                    this.state.catalogItems.map(object => {return <CatalogCard item={object}/>})
+                    this.state.catalogItems.map(object => {return <CatalogCard item={object} button={{label:"Read More", path: "/catalog/" + object.id}} />})
             )
         }
         else {
@@ -61,39 +57,5 @@ class Catalog extends Component {
         );
     }
 }
-
-const CatalogCard = props => (
-
-    <Card
-        fullWidth={true}
-        className="catalog-card"
-    >
-        <CardHeader
-            title={props.item.name}
-            subtitle = { "v." + props.item.version}
-            actAsExpander={true}
-            showExpandableButton={true}
-            className="catalog-card-header"
-        />
-        <CardActions>
-            <FlatButton label="ReadMore"
-//                        containerElement={<Link to={"/catalog/" + props.item.id} params={{ data: props.item }} />}
-                        containerElement={<Link to={
-                                {
-                                    pathname: "/catalog/" + props.item.id,
-                                    data: props.item
-                                }
-                        } />}
-
-            />
-        </CardActions>
-        <CardText expandable={true}>
-            <p>{props.item.description}</p>
-            <p>{props.item.type}</p>
-            <p>{props.item.version}</p>
-            <p>{props.item.isPaid}</p>
-        </CardText>
-    </Card>
-);
 
 export default Catalog;

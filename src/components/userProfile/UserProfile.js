@@ -12,6 +12,8 @@ import APIConfig from '../../configuration/APIConfig'
 import Header from '../Header'
 import Paper from 'material-ui/Paper';
 import CircularProgress from 'material-ui/CircularProgress';
+import {List, ListItem} from 'material-ui/List';
+import Subheader from 'material-ui/Subheader';
 
 Amplify.configure({
     Auth: AuthConfig.auth,
@@ -85,7 +87,9 @@ class UserProfile extends Component {
                 if(catalogItem) {
                     object.name = catalogItem.name;
                 }
-                return <ProfileObject profile={{"object": object}}/>
+                return <ListItem>
+                     <ProfileObject profile={{"object": object}} catalogItem={catalogItem}/>
+                </ListItem>
             })
         }
         return <CircularProgress/>
@@ -112,9 +116,11 @@ class UserProfile extends Component {
                     <p>User email: {this.getUserName()}</p>
                 </Paper>
 
-                <div>
+                <List>
+                    <Subheader>Active subscriptions:</Subheader>
                     {this.renderProfileContent()}
-                </div>
+                </List>
+
             </div>
         );
     }

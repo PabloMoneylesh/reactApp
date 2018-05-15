@@ -1,0 +1,15 @@
+/*id: 1*/
+{
+    "name": "Article Table of Contents plugin for TinyMCE editor",
+    "description": "<p>TinyMCE plugin for creating <b>Table of contents</b> for articles.</p><p> After installation new button is added to Editor toolbar.</p><p> You can easily create simple Table of contents that represents sections of your article on the web site.</p>    <p> Table of contents is created base on H1 - H6 header tags in your article. To each header tag will be added anchor that and allows your users to navigate on    articles page.</p>",
+    "fullDescription": "",
+    "logo":"/images/toc/logo.jpg",
+    "type": "plugin",
+    "version": "1.1",
+    "isPaid": true,
+    "lastUpdate": "2018-05-10T15:07:33.416Z",
+    "compatibility": "3",
+    "bucket": "pavelb-react-app-test",
+    "key": "files/table-of-contents-v1.txt",
+    "pageLink": "http://dvlo.pp.ua/toc.html"
+}

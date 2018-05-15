@@ -18,6 +18,8 @@ Amplify.configure({
     API: APIConfig.apiConfig
 });
 
+const subscriptionPeriod = 12;
+
 
 class Subscribe extends Component {
     constructor(props) {
@@ -44,7 +46,7 @@ class Subscribe extends Component {
             body: { //objectUniqueId, objectId, subscriptionPeriod
                 itemId: this.props.match.params.itemId,
                 itemUniqueId: Math.random().toString(36).substring(7),
-                subscriptionPeriod: 12
+                subscriptionPeriod: subscriptionPeriod
             },
             response: true // OPTIONAL (return entire response object instead of response.data)
         };
@@ -63,10 +65,11 @@ class Subscribe extends Component {
         if (this.itemData)
             return (
                 <div>
-                    <p>You are about to get:</p>
+                    <p>You are about to get subscription for:</p>
                     <p>{this.itemData.name}</p>
                     <p>version: {this.itemData.version}</p>
                     <p>Is Paid: {this.itemData.isPaid ? "Yes" : "No"}</p>
+                    <p>subscription period is {subscriptionPeriod} months.</p>
                     <RaisedButton label="Get It!"
                                   onClick={this.subsribe}
                                   primary={true}
@@ -75,7 +78,7 @@ class Subscribe extends Component {
             )
         else
             return (
-                <p>Something went wrong...</p>
+                <p>Something went wrong... Try to start subscription process once again.</p>
             )
     }
 
