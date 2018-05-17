@@ -6,11 +6,7 @@ import {BrowserRouter, Route} from "react-router-dom";
 import createBrowserHistory from "history/createBrowserHistory";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
-
-
-
 import AuthConfig from './configuration/AuthConfig'
-import APIConfig from './configuration/APIConfig'
 
 import Catalog from './components/catalog/Catalog'
 import CatalogItem from './components/catalog/CatalogItem'
@@ -19,14 +15,10 @@ import Subscribe from "./components/subscription/Subscribe";
 
 import UserProfile from "./components/userProfile/UserProfile";
 
-//Amplify.Logger.LOG_LEVEL = 'DEBUG';
-//window.LOG_LEVEL = 'DEBUG';
-
 const history = createBrowserHistory();
 
 Amplify.configure({
-    Auth: AuthConfig.auth,
-    API: APIConfig.apiConfig
+    Auth: AuthConfig.auth
 });
 
 

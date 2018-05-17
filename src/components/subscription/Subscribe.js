@@ -2,24 +2,14 @@ import React, {Component} from 'react';
 
 import '../../styles/subscribe.css'
 
-import Amplify, {API} from 'aws-amplify';
 import {withAuthenticator} from 'aws-amplify-react';
-
-import AuthConfig from '../../configuration/AuthConfig'
 import APIConfig from '../../configuration/APIConfig'
-
 import Header from '../Header'
-
 import Paper from 'material-ui/Paper';
 import RaisedButton from 'material-ui/RaisedButton';
-
-Amplify.configure({
-    Auth: AuthConfig.auth,
-    API: APIConfig.apiConfig
-});
+import axios from 'axios';
 
 const subscriptionPeriod = 12;
-
 
 class Subscribe extends Component {
     constructor(props) {
@@ -33,31 +23,30 @@ class Subscribe extends Component {
         }
     }
 
+
     getUserName = () => {
         if (this.props.authState === "signedIn")
             return this.props.authData.signInUserSession.idToken.payload.email;
         return "";
     }
 
-    subsribe = () => {
+    subscribe = () => {
         let path = '/subscribe';
-        let options = { // OPTIONAL
-            headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
-            body: { //objectUniqueId, objectId, subscriptionPeriod
-                itemId: this.props.match.params.itemId,
-                itemUniqueId: Math.random().toString(36).substring(7),
-                subscriptionPeriod: subscriptionPeriod
-            },
-            response: true // OPTIONAL (return entire response object instead of response.data)
+        let options = {
+            headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}
         };
-        API.post("ProfileApi", path, options)
+
+        let data = { //objectUniqueId, objectId, subscriptionPeriod
+            itemId: this.props.match.params.itemId,
+            itemUniqueId: Math.random().toString(36).substring(7),
+            subscriptionPeriod: subscriptionPeriod
+        }
+
+        axios.post(APIConfig.apiConfig.apiEndpoint + path, data, options)
             .then(response => {
+                console.log("response: " + JSON.stringify(response));
                 this.props.history.push('/profile')
             })
-            .catch(error => {
-                console.log(error);
-                alert("something went wrong... refresh the page and try one more time.");
-            });
     }
 
     renderItemDetails() {
@@ -71,7 +60,7 @@ class Subscribe extends Component {
                     <p>Is Paid: {this.itemData.isPaid ? "Yes" : "No"}</p>
                     <p>subscription period is {subscriptionPeriod} months.</p>
                     <RaisedButton label="Get It!"
-                                  onClick={this.subsribe}
+                                  onClick={this.subscribe}
                                   primary={true}
                     />
                 </div>

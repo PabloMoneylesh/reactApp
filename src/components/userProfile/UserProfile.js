@@ -3,10 +3,8 @@ import ProfileObject from './ProfileObject';
 
 import '../../styles/userProfile.css'
 
-import Amplify, {API} from 'aws-amplify';
 import {withAuthenticator} from 'aws-amplify-react';
 
-import AuthConfig from '../../configuration/AuthConfig'
 import APIConfig from '../../configuration/APIConfig'
 
 import Header from '../Header'
@@ -14,11 +12,7 @@ import Paper from 'material-ui/Paper';
 import CircularProgress from 'material-ui/CircularProgress';
 import {List, ListItem} from 'material-ui/List';
 import Subheader from 'material-ui/Subheader';
-
-Amplify.configure({
-    Auth: AuthConfig.auth,
-    API: APIConfig.apiConfig
-});
+import axios from 'axios';
 
 
 class UserProfile extends Component {
@@ -34,44 +28,27 @@ class UserProfile extends Component {
 
     gitProfile() {
         console.log("UserProfile -gitProfile");
-        const self = this;
         let path = '/getprofile';
         let options = { // OPTIONAL
-            headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
-            response: true // OPTIONAL (return entire response object instead of response.data)
+            headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}
         };
 
-        API.get("ProfileApi", path, options)
+        axios.get(APIConfig.apiConfig.apiEndpoint + path, options)
             .then(response => {
-                console.log("UserProfile -gitProfile - done");
-                //console.log("response: " + JSON.stringify(response));
-                self.setState({userProfile: response.data});
+                console.log("response: " + JSON.stringify(response));
+                this.setState({userProfile: response.data});
             })
-            .catch(p1 => {
-                console.log(p1);
-                self.setState({userProfile: "error"});
-            });
     }
 
     loadCatalogData() {
         console.log("UserProfile -loadCatalogData");
-        const self = this;
         let path = '/getcatalog';
-        let options = { // OPTIONAL
-            //headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}, // OPTIONAL
-            response: true // OPTIONAL (return entire response object instead of response.data)
-        };
 
-        API.get("ProfileApi", path, options)
+        axios.get(APIConfig.apiConfig.apiEndpoint + path)
             .then(response => {
-                console.log("UserProfile -loadCatalogData - done");
-                //console.log("response: " + JSON.stringify(response));
-                self.setState({catalogItems: response.data.items});
+                console.log("response: " + JSON.stringify(response));
+                this.setState({catalogItems: response.data.items});
             })
-            .catch(p1 => {
-                console.log(p1);
-            });
-
     }
 
     getUserName = () => {
@@ -84,11 +61,11 @@ class UserProfile extends Component {
         if (this.state.userProfile && this.state.catalogItems) {
             return this.state.userProfile.objects.map(object => {
                 let catalogItem = this.findCatalogItem(object.itemId);
-                if(catalogItem) {
+                if (catalogItem) {
                     object.name = catalogItem.name;
                 }
                 return <ListItem>
-                     <ProfileObject profile={{"object": object}} catalogItem={catalogItem}/>
+                    <ProfileObject profile={{"object": object}} catalogItem={catalogItem}/>
                 </ListItem>
             })
         }

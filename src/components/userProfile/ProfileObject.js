@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Amplify, { API } from 'aws-amplify';
 import {withAuthenticator} from 'aws-amplify-react';
 
 import APIConfig from '../../configuration/APIConfig'
@@ -7,14 +6,8 @@ import {Card, CardActions, CardHeader, CardText} from 'material-ui/Card';
 import FlatButton from 'material-ui/FlatButton';
 import Paper from 'material-ui/Paper';
 import ReactHtmlParser from 'react-html-parser';
-
+import axios from 'axios';
 import '../../styles/profileObjest.css'
-
-Amplify.configure({
-    API: APIConfig.apiConfig
-});
-
-
 
 
 class ProfileData extends Component {
@@ -28,70 +21,66 @@ class ProfileData extends Component {
     }
 
     getPresignedUrl = () => {
-        let path = '/getlink?id='+ this.props.profile.object.id;
-        let options  = {
-            headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken},
-            response: true
+        let path = '/getlink?id=' + this.props.profile.object.id;
+        let options = { // OPTIONAL
+            headers: {Authorization: this.props.authData.signInUserSession.idToken.jwtToken}
         };
-        const self = this;
-        API.get("ProfileApi", path, options )
+
+        axios.get(APIConfig.apiConfig.apiEndpoint + path, options)
             .then(response => {
                 console.log("response: " + JSON.stringify(response));
-                //alert(response.data.url);
-                //self.setState({downloadLinkClass :"download-link", downloadLink: response.data.url});
-                self.setState({downloadLink: response.data.url, downloadLinkClass:"download-link", cardExpanded:true});
+                this.setState({
+                    downloadLink: response.data.url,
+                    downloadLinkClass: "download-link",
+                    cardExpanded: true
+                });
             })
-            .catch(p1 => {
-                console.log("error while building download link");
-                console.log(p1);
-                alert("Something went wrong... Refresh the page and try one more time.");
-            });
-
     }
 
-    onExpandChange = () =>{
-        this.setState({cardExpanded:!this.state.cardExpanded});
+    onExpandChange = () => {
+        this.setState({cardExpanded: !this.state.cardExpanded});
     }
 
-render() {
+    render() {
         console.log(this);
-    return (
-        <Card
-            className="catalog-card"
-            expanded={this.state.cardExpanded}
-            expandable={true}
-            onExpandChange={this.onExpandChange}
-        >
-            <CardHeader
-                title={this.props.profile.object.name}
-                subtitle={this.props.catalogItem.type + " v." + this.props.catalogItem.version}
-                actAsExpander={true}
-                showExpandableButton={true}
-                className="catalog-card-header"
-            />
-            <CardActions>
-                <FlatButton label="Get Link"
-                            onClick={this.getPresignedUrl} />}
-
+        return (
+            <Card
+                className="catalog-card"
+                expanded={this.state.cardExpanded}
+                expandable={true}
+                onExpandChange={this.onExpandChange}
+            >
+                <CardHeader
+                    title={this.props.profile.object.name}
+                    subtitle={this.props.catalogItem.type + " v." + this.props.catalogItem.version}
+                    actAsExpander={true}
+                    showExpandableButton={true}
+                    className="catalog-card-header"
                 />
-            </CardActions>
-            <CardText expandable={true}>
-                <div className="catalog-item-description">
-                { ReactHtmlParser(this.props.catalogItem.description) }
-                </div>
-                <p>Is Paid: {this.props.catalogItem.isPaid ? "Yes" : "No"}</p>
-                <p>Valid from: {new Date(this.props.profile.object.startDate).toLocaleDateString()}</p>
-                <p>Valid to: {new Date(this.props.profile.object.endDate).toLocaleDateString() }</p>
+                <CardActions>
+                    <FlatButton label="Get Link"
+                                onClick={this.getPresignedUrl}/>}
 
-                <Paper zDepth={3}v className={this.state.downloadLinkClass}>
-                    <p>Your download link:</p>
-                    <a href={this.state.downloadLink} target="_blank">Download</a>
-                    <p>This link is walid for 5 minutes.</p>
-                </Paper>
+                    />
+                </CardActions>
+                <CardText expandable={true}>
+                    <div className="catalog-item-description">
+                        {ReactHtmlParser(this.props.catalogItem.description)}
+                    </div>
+                    <p>Is Paid: {this.props.catalogItem.isPaid ? "Yes" : "No"}</p>
+                    <p>Valid from: {new Date(this.props.profile.object.startDate).toLocaleDateString()}</p>
+                    <p>Valid to: {new Date(this.props.profile.object.endDate).toLocaleDateString()}</p>
 
-            </CardText>
-        </Card>
-    )
+                    <Paper zDepth={3} v className={this.state.downloadLinkClass}>
+                        <p>Your download link:</p>
+                        <a href={this.state.downloadLink} target="_blank">Download</a>
+                        <p>This link is walid for 5 minutes.</p>
+                    </Paper>
+
+                </CardText>
+            </Card>
+        )
+    }
 }
-}
+
 export default withAuthenticator(ProfileData);
