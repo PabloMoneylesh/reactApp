@@ -16,12 +16,7 @@ exports.handler = (event, context, callback) => {
 
     let uid = event.requestContext.authorizer.claims['cognito:username']
 
-    let bucketName;
-    let fileKey;
     let itemUniqueId = event.queryStringParameters.id;
-
-    bucketName = "mft-tests";
-    fileKey = "group-dir/testFileA.txt";
 
     if(!uid){
         createResponse(400, {status: "No user Id found in request"}, callback)
@@ -31,10 +26,11 @@ exports.handler = (event, context, callback) => {
     getUserProfile(uid, event)
         .then(profile => foundItemIdForObjectInProfile(profile, itemUniqueId))
         .then(
-            itemId => getBucketAndKeyForItem(itemId, event)
+            itemId => itemId ? getBucketAndKeyForItem(itemId, event) : Promise.reject("id not in profile")
         )
         .then(
-            bucketAndKeyForItem => createResponse(200, {"url": getPresignedUrl(bucketAndKeyForItem)}, callback))
+            bucketAndKeyForItem => bucketAndKeyForItem ? createResponse(200, {"url": getPresignedUrl(bucketAndKeyForItem)}, callback) : Promise.reject("item not found in catalog")
+        )
         .catch(error => console.log(createResponse(400, {status: "Something went wrong: " + error}, callback)));
 };
 //Promise.resolve(createResponse(200, {"url": getPresignedUrl(bucketName, fileKey)}, callback))
@@ -69,7 +65,6 @@ function getBucketAndKeyForItem(itemId, event){
 
     console.log("getBucketAndKeyForItem " + itemId);
 
-
     let newEvent= event;
     newEvent.queryStringParameters={"itemId": itemId};
 
@@ -82,15 +77,14 @@ function getBucketAndKeyForItem(itemId, event){
 
 function  parseCatalogItem(response){
     console.log("parseCatalogItem");
-//console.log(response);
     var bucketAndKeyForItem = {};
     let respBody=JSON.parse(JSON.parse(response.Payload).body);
-
-    bucketAndKeyForItem.bucket=respBody.items[0].bucket;
-    bucketAndKeyForItem.key=respBody.items[0].key;
-    console.log("res: ");
-    console.log(bucketAndKeyForItem);
-    return bucketAndKeyForItem;
+    if(respBody.items && respBody.items[0]){
+        bucketAndKeyForItem.bucket=respBody.items[0].bucket;
+        bucketAndKeyForItem.key=respBody.items[0].key;
+        return bucketAndKeyForItem;
+    }
+    return null;
 }
 
 function getPresignedUrl (bucketAndKeyForItem){

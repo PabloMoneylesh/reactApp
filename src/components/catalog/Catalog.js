@@ -43,7 +43,7 @@ class Catalog extends Component {
     }
 
     render() {
-        console.log(this);
+        console.log(this)
         return (
             <div>
                 <Header logOutHandler={this.props.onStateChange} authState={this.props.authState}/>

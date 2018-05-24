@@ -9,7 +9,7 @@
     "isPaid": true,
     "lastUpdate": "2018-05-10T15:07:33.416Z",
     "compatibility": "3",
-    "bucket": "pavelb-react-app-test",
-    "key": "files/table-of-contents-v1.txt",
+    "bucket": "dvlo.pp.ua",
+    "key": "files/toc/plg_tynimcetocbutton_v1.1.zip",
     "pageLink": "http://dvlo.pp.ua/toc.html"
 }

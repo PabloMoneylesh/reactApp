@@ -41,7 +41,7 @@ exports.handler = (event, context, callback) => {
             return updateProfile(profile, operationType, prepareNewProfileObject());
         })
         .then(profile => {
-            return writeProfiletoDB(prepareUpdateRequestParams(profile));
+            return writeProfiletoDB(prepareUpdateRequestParams(uid, profile));
         })
         .then(
             result => createResponse(200, {status: "OK"}, callback),
@@ -83,7 +83,7 @@ function updateProfile(profile, operationType, data) {
 /*
 build request object for DB update
  */
-function prepareUpdateRequestParams(dbParams, data){
+function prepareUpdateRequestParams(uid, data){
     var dbParams = {
         TableName: profileTableName,
         Key: {"uid": {S: uid}},

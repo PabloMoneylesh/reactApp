@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import './App.css';
 import Amplify from 'aws-amplify';
 
-import {BrowserRouter, Route} from "react-router-dom";
+import {HashRouter , Route} from "react-router-dom";
 import createBrowserHistory from "history/createBrowserHistory";
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
@@ -36,7 +36,7 @@ class App extends Component {
 
             <div className="App">
 
-                <BrowserRouter histiry={history}>
+                <HashRouter history={history}>
                     <div>
 
 
@@ -46,7 +46,7 @@ class App extends Component {
                     <Route path="/subscribe/:itemId" component={Subscribe}/>
                     <Route path="/profile" component={UserProfile}/>
                     </div>
-                </BrowserRouter>
+                </HashRouter>
 
 
             </div>
