@@ -5,6 +5,8 @@ import APIConfig from '../../configuration/APIConfig'
 import CircularProgress from 'material-ui/CircularProgress';
 import {CatalogCard} from "./CatalogCard";
 import axios from 'axios';
+import MetaTags from 'react-meta-tags';
+
 
 class CatalogItem extends Component {
 
@@ -46,10 +48,23 @@ class CatalogItem extends Component {
         }
     }
 
+    renderMeta(){
+        if (this.state.itemData) {
+            return (
+                <MetaTags>
+                    <title>{this.state.itemData.name}</title>
+                    <meta name="description" content={this.state.itemData.description} />
+                    <meta property="og:title" content={this.state.itemData.name} />
+                </MetaTags>
+            )
+        }
+    }
+
     render() {
         console.log(this);
         return (
             <div>
+                {this.renderMeta()}
                 <Header/>
                 {this.renderContent()}
             </div>

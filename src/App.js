@@ -14,6 +14,9 @@ import CatalogItem from './components/catalog/CatalogItem'
 import Subscribe from "./components/subscription/Subscribe";
 
 import UserProfile from "./components/userProfile/UserProfile";
+import ReactGA from 'react-ga';
+import { ym } from 'react-ym';
+
 
 const history = createBrowserHistory();
 
@@ -21,6 +24,9 @@ Amplify.configure({
     Auth: AuthConfig.auth
 });
 
+ReactGA.initialize('UA-110778284-1');
+ReactGA.pageview(window.location.pathname + window.location.search);
+ym.initialize('46922397');
 
 class App extends Component {
     constructor(props) {

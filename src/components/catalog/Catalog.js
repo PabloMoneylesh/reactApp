@@ -8,6 +8,7 @@ import {CatalogCard} from "./CatalogCard";
 
 import axios from 'axios';
 import APIConfig from '../../configuration/APIConfig'
+import MetaTags from 'react-meta-tags';
 
 class Catalog extends Component {
     constructor(props) {
@@ -46,6 +47,11 @@ class Catalog extends Component {
         console.log(this)
         return (
             <div>
+                <MetaTags>
+                    <title>Product Catalog</title>
+                    <meta name="description" content="Joomla plugins catalog. Download plugins for Joomla CMS" />
+                    <meta property="og:title" content="Product Catalog" />
+                </MetaTags>
                 <Header logOutHandler={this.props.onStateChange} authState={this.props.authState}/>
                 {this.renderItems()}
             </div>
