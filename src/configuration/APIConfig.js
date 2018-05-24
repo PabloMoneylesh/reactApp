@@ -1,5 +1,5 @@
 export const apiConfig = {
-    apiEndpoint: "https://0r4dohcks0.execute-api.eu-central-1.amazonaws.com/dev",
+    apiEndpoint: "https://api.dvlo.pp.ua",
 };
 
 export default {apiConfig};
