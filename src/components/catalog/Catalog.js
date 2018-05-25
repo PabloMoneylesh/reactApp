@@ -24,17 +24,17 @@ class Catalog extends Component {
         let path = '/getcatalog';
         axios.get(APIConfig.apiConfig.apiEndpoint + path)
             .then(response => {
-                console.log("response: " + JSON.stringify(response));
-                this.setState({catalogItems: response.data.items});
+                //console.log("response: " + JSON.stringify(response));
+                this.setState({catalogItems: response.data.items.sort((a, b) => a.id - b.id)});
             })
-
     }
 
     renderItems() {
         if (this.state.catalogItems) {
             return (
                 this.state.catalogItems.map(object => {
-                    return <CatalogCard item={object} button={{label: "Read More", path: "/catalog/" + object.id}}/>
+                    return <CatalogCard key={object.id} item={object}
+                                        button={{label: "Read More", path: "/catalog/" + object.id}}/>
                 })
             )
         }
@@ -43,15 +43,21 @@ class Catalog extends Component {
         }
     }
 
+    renderMeta() {
+        return (
+            <MetaTags>
+                <title>Product Catalog</title>
+                <meta name="description" content="Joomla plugins catalog. Download plugins for Joomla CMS"/>
+                <meta property="og:title" content="Product Catalog"/>
+            </MetaTags>
+        )
+    }
+
     render() {
-        console.log(this)
+        //console.log(this)
         return (
             <div>
-                <MetaTags>
-                    <title>Product Catalog</title>
-                    <meta name="description" content="Joomla plugins catalog. Download plugins for Joomla CMS" />
-                    <meta property="og:title" content="Product Catalog" />
-                </MetaTags>
+                {this.renderMeta()}
                 <Header logOutHandler={this.props.onStateChange} authState={this.props.authState}/>
                 {this.renderItems()}
             </div>

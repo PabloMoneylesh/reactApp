@@ -7,20 +7,19 @@ import RaisedButton from 'material-ui/RaisedButton';
 const style = {
     'max-width': '50%',
     'min-width': '20%',
-    'border': '2px solid #020202;'
+    'border': '2px solid #020202'
 };
 
 export const CatalogCard = props => (
 
     <Card
-        fullWidth={true}
         className="catalog-card"
         expandable={true}
-        expanded={props.expanded}
+        initiallyExpanded={props.expanded}
     >
         <CardHeader
             title={props.item.name}
-            subtitle={"v." + props.item.version}
+            subtitle={props.item.description}
             actAsExpander={true}
             showExpandableButton={true}
             className="catalog-card-header"
@@ -35,7 +34,7 @@ export const CatalogCard = props => (
         <CardText expandable={true}>
             <p>About:</p>
             <div className="catalog-item-description">
-                { ReactHtmlParser(props.item.description) }
+                { ReactHtmlParser(props.item.fullDescription) }
             </div>
             <p>Type: {props.item.type}</p>
             <p>Version: {props.item.version}</p>
@@ -53,7 +52,16 @@ export const CatalogCard = props => (
                 />
             }
         </CardText>
+        <CardActions actAsExpander={true}>
+            {
+                !props.expanded &&
+                <RaisedButton label="Expand"  />
+            }
+
+
+        </CardActions>
         <CardActions>
+
             <RaisedButton label={props.button.label} primary={true}
                           containerElement={<Link to={
                               {

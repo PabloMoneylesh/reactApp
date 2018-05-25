@@ -2,9 +2,9 @@
     /*id: 1*/
 {
     "name": "Article Table of Contents plugin for TinyMCE editor",
-    "description": "<p>TinyMCE plugin for creating <b>Table of contents</b> for articles.</p><p> After installation new button is added to Editor toolbar.</p><p> You can easily create simple Table of contents that represents sections of your article on the web site.</p>    <p> Table of contents is created base on H1 - H6 header tags in your article. To each header tag will be added anchor that and allows your users to navigate on    articles page.</p>",
-    "fullDescription": "",
-    "logo":"/images/toc/logo.jpg",
+    "description": "TinyMCE plugin for creating Table of contents for Joomla articles.",
+    "fullDescription": "<p>TinyMCE plugin for creating <b>Table of contents</b> for articles.</p><p> After installation new button is added to Editor toolbar.</p><p> You can easily create simple Table of contents that represents sections of your article on the web site.</p>    <p> Table of contents is created base on H1 - H6 header tags in your article. To each header tag will be added anchor that and allows your users to navigate on    articles page.</p>",
+    "logo":"/img/plg_tynimcetocbutton_v1.0.png",
     "type": "plugin",
     "version": "1.1",
     "isPaid": false,
@@ -17,8 +17,8 @@
     ,/*id:2 */
 {
     "name": "Yandex turbo pages for Joomla",
-    "description": "<p>How to enable and configure turbo pages technology by Yandex for Joomla sites.</p> <p>Step by step instruction how to set up and configure Joomla to provide correct data for Yandex tyrbo pages feed.</p> <p>Как настроить турбо страницы Яндекс для Joomla сайта</p>",
-    "fullDescription": "",
+    "description": "Enabling and configuration Turbo pages technology by Yandex for Joomla sites.",
+    "fullDescription": "<p>How to enable and configure turbo pages technology by Yandex for Joomla sites.</p> <p>Step by step instruction how to set up and configure Joomla to provide correct data for Yandex tyrbo pages feed.</p> <p>Как настроить турбо страницы Яндекс для Joomla сайта</p>",
     "logo":"/img/logo.jpg",
     "type": "component",
     "version": "1.0",
